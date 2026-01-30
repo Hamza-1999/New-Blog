@@ -22,6 +22,18 @@ async function getBlog(slug: string) {
   }
 }
 
+function normalizeText(value?: string) {
+  if (!value) return "";
+  return value.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+}
+
+function buildMetaDescription(value?: string) {
+  const cleaned = normalizeText(value);
+  if (!cleaned) return "";
+  if (cleaned.length <= 160) return cleaned;
+  return `${cleaned.slice(0, 157).trimEnd()}...`;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -31,14 +43,18 @@ export async function generateMetadata({
   const blog = await getBlog(slug);
   if (!blog) return { title: "Not Found" };
 
+  const title = normalizeText(blog.metaTitle || blog.title);
+  const description = buildMetaDescription(blog.metaDescription || blog.excerpt || blog.title);
+
   return {
-    title: blog.metaTitle || blog.title,
-    description: blog.metaDescription || blog.excerpt,
+    title,
+    description,
     keywords: blog.metaKeywords?.split(",").map((k: string) => k.trim()),
     openGraph: {
-      title: blog.metaTitle || blog.title,
-      description: blog.metaDescription || blog.excerpt,
+      title,
+      description,
       type: "article",
+      url: `${SITE_URL}/blog/${blog.slug}`,
       publishedTime: blog.createdAt,
       modifiedTime: blog.updatedAt,
       authors: [blog.author.name],
@@ -46,8 +62,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: blog.metaTitle || blog.title,
-      description: blog.metaDescription || blog.excerpt,
+      title,
+      description,
       images: [blog.thumbnail],
     },
     alternates: {
@@ -82,13 +98,16 @@ export default async function BlogPage({
     notFound();
   }
 
+  const title = normalizeText(blog.metaTitle || blog.title);
+  const description = buildMetaDescription(blog.metaDescription || blog.excerpt || blog.title);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "BlogPosting",
-        headline: blog.title,
-        description: blog.metaDescription || blog.excerpt,
+        headline: title || blog.title,
+        description,
         image: blog.thumbnail,
         datePublished: blog.createdAt,
         dateModified: blog.updatedAt,
@@ -177,7 +196,7 @@ export default async function BlogPage({
                 </div>
               </div>
 
-              <div className="relative aspect-[2/1] rounded-xl overflow-hidden">
+              <div className="relative aspect-2/1 rounded-xl overflow-hidden">
                 <img
                   src={blog.thumbnail}
                   alt={blog.title}
@@ -194,11 +213,11 @@ export default async function BlogPage({
 
             <div className="mt-10 p-6 bg-card rounded-xl border border-border">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
                   {blog.author.name.charAt(0)}
                 </div>
                 <div>
-                  <p className="text-[11px] text-muted-foreground uppercase tracking-[0.1em] mb-0.5">Written by</p>
+                  <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-0.5">Written by</p>
                   <h3 className="font-bold text-base" style={{ fontFamily: "var(--font-display)" }}>
                     {blog.author.name}
                   </h3>
@@ -210,7 +229,7 @@ export default async function BlogPage({
             </div>
           </article>
 
-          <aside className="hidden lg:block w-[300px] flex-shrink-0">
+          <aside className="hidden lg:block w-[300px] shrink-0">
             <div className="sticky top-8">
               <AdBanner placement="blog_sidebar" />
             </div>
