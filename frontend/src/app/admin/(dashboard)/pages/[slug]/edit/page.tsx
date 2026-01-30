@@ -78,20 +78,20 @@ export default function EditPagePage({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <Link
             href="/admin/pages"
-            className="p-2 hover:bg-accent rounded-lg transition-colors text-muted-foreground hover:text-foreground"
+            className="p-2 hover:bg-accent rounded-lg transition-colors text-muted-foreground hover:text-foreground shrink-0"
           >
             <ArrowLeft size={18} />
           </Link>
-          <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
+          <h1 className="text-xl sm:text-2xl font-bold truncate" style={{ fontFamily: "var(--font-display)" }}>
             Edit Page
           </h1>
         </div>
-        <Button onClick={handleSave} disabled={updatePage.isPending} className="gap-2">
-          <Save size={16} /> {updatePage.isPending ? "Saving..." : "Save"}
+        <Button onClick={handleSave} disabled={updatePage.isPending} className="gap-1.5 shrink-0" size="sm">
+          <Save size={14} /> {updatePage.isPending ? "Saving..." : "Save"}
         </Button>
       </div>
 

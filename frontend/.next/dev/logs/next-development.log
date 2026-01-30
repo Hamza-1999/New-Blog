@@ -1,1 +1,7 @@
-[00:00:00.910] Server  LOG     ✓ Ready in 728ms
+[00:00:01.421] Server  LOG     ✓ Ready in 1147ms
+[00:03:57.080] Server  WARN    Error: Route "/" used `searchParams.page`. `searchParams` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:04:44.803] Server  WARN    Error: Route "/" used `searchParams.page`. `searchParams` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+[00:04:46.510] Server  WARN    ⚠ Cross origin request detected from 192.168.100.138 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[00:04:46.580] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:04:54.864] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold

@@ -83,16 +83,16 @@ export default function NewBlogPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
           Create New Blog
         </h1>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => handleSubmit("draft")} disabled={createBlog.isPending} className="gap-2">
-            <FileText size={16} /> Save Draft
+          <Button variant="outline" size="sm" onClick={() => handleSubmit("draft")} disabled={createBlog.isPending} className="gap-1.5 flex-1 sm:flex-none">
+            <FileText size={14} /> <span className="hidden sm:inline">Save </span>Draft
           </Button>
-          <Button onClick={() => handleSubmit("published")} disabled={createBlog.isPending} className="gap-2">
-            <Eye size={16} /> Publish
+          <Button size="sm" onClick={() => handleSubmit("published")} disabled={createBlog.isPending} className="gap-1.5 flex-1 sm:flex-none">
+            <Eye size={14} /> Publish
           </Button>
         </div>
       </div>

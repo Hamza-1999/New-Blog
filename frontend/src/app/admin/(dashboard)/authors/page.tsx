@@ -103,11 +103,11 @@ export default function AuthorsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
+        <h1 className="text-xl sm:text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
           Authors
         </h1>
-        <Button onClick={() => setShowForm(true)} className="gap-2">
-          <UserPlus size={16} /> Add Author
+        <Button onClick={() => setShowForm(true)} className="gap-2" size="sm">
+          <UserPlus size={16} /> <span className="hidden sm:inline">Add Author</span><span className="sm:hidden">Add</span>
         </Button>
       </div>
 
@@ -177,23 +177,23 @@ export default function AuthorsPage() {
         ) : (
           <div className="divide-y divide-border">
             {data.users.map((author: User) => (
-              <div key={author.id} className="p-4 flex items-center gap-4 hover:bg-accent/20 transition-colors">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold flex-shrink-0">
+              <div key={author.id} className="p-3 sm:p-4 flex items-start sm:items-center gap-3 sm:gap-4 hover:bg-accent/20 transition-colors">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold flex-shrink-0 text-sm sm:text-base">
                   {author.name.charAt(0)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-medium text-sm">{author.name}</h3>
                     <Badge variant={author.role === "admin" ? "default" : "secondary"} className="text-[10px]">
                       {author.role}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-3 mt-0.5">
-                    <span className="text-xs text-muted-foreground">{author.email}</span>
-                    <span className="text-xs text-muted-foreground">{author._count?.blogs || 0} blogs</span>
+                  <div className="flex items-center gap-2 sm:gap-3 mt-0.5">
+                    <span className="text-xs text-muted-foreground truncate">{author.email}</span>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">{author._count?.blogs || 0} blogs</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 shrink-0">
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(author)}>
                     <Pencil size={14} />
                   </Button>

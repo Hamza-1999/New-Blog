@@ -139,12 +139,12 @@ export default function BlogsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
+        <h1 className="text-xl sm:text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
           Blogs
         </h1>
         <Link href="/admin/blogs/new">
-          <Button className="gap-2">
-            <Plus size={16} /> New Blog
+          <Button className="gap-2" size="sm">
+            <Plus size={16} /> <span className="hidden sm:inline">New Blog</span><span className="sm:hidden">New</span>
           </Button>
         </Link>
       </div>
@@ -165,7 +165,7 @@ export default function BlogsPage() {
             </button>
           ))}
         </div>
-        <form onSubmit={handleSearch} className="flex gap-2 flex-1 max-w-sm ml-auto">
+        <form onSubmit={handleSearch} className="flex gap-2 w-full sm:flex-1 sm:max-w-sm sm:ml-auto">
           <div className="relative flex-1">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -218,28 +218,28 @@ export default function BlogsPage() {
               )}
             </div>
             {blogs.map((blog) => (
-              <div key={blog.id} className="p-4 flex items-center gap-4 hover:bg-accent/20 transition-colors">
+              <div key={blog.id} className="p-3 sm:p-4 flex items-start sm:items-center gap-3 sm:gap-4 hover:bg-accent/20 transition-colors">
                 <input
                   type="checkbox"
                   aria-label={`Select blog ${blog.title}`}
                   checked={selectedIds.has(blog.id)}
                   onChange={() => toggleSelected(blog.id)}
-                  className="h-4 w-4 rounded border border-input"
+                  className="h-4 w-4 rounded border border-input mt-1 sm:mt-0"
                 />
-                <div className="w-16 h-12 rounded-lg overflow-hidden bg-secondary shrink-0">
+                <div className="hidden sm:block w-16 h-12 rounded-lg overflow-hidden bg-secondary shrink-0">
                   <img src={blog.thumbnail} alt="" className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-sm truncate">{blog.title}</h3>
-                  <div className="flex items-center gap-3 mt-1">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-1">
                     <span className="text-xs text-muted-foreground">{blog.author.name}</span>
-                    <span className="text-xs text-muted-foreground">{formatDate(blog.createdAt)}</span>
+                    <span className="text-xs text-muted-foreground hidden sm:inline">{formatDate(blog.createdAt)}</span>
                     <Badge variant={blog.status === "published" ? "success" : "warning"} className="text-[10px]">
                       {blog.status}
                     </Badge>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 shrink-0">
                   <Link href={`/admin/blogs/${blog.id}/edit`}>
                     <Button variant="ghost" size="icon" className="h-8 w-8">
                       <Pencil size={14} />

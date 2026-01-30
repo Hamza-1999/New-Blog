@@ -35,9 +35,9 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
+          <h1 className="text-lg sm:text-xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
             Welcome back, {user?.name}
           </h1>
           <p className="text-[13px] text-muted-foreground mt-0.5">
@@ -45,7 +45,7 @@ export default function DashboardPage() {
           </p>
         </div>
         <Link href="/admin/blogs/new">
-          <Button size="sm" className="gap-1.5 text-[13px]">
+          <Button size="sm" className="gap-1.5 text-[13px] w-full sm:w-auto">
             <Plus size={14} /> New Blog
           </Button>
         </Link>

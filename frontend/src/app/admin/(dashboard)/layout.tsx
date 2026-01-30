@@ -33,7 +33,9 @@ export default function AdminDashboardLayout({
     <div className="flex min-h-screen bg-background">
       <AdminSidebar />
       <main className="flex-1 overflow-y-auto">
-        <div className="p-6 md:p-8 max-w-7xl">{children}</div>
+        <div className="pt-16 md:pt-0">
+          <div className="p-4 sm:p-6 md:p-8 max-w-7xl">{children}</div>
+        </div>
       </main>
     </div>
   );

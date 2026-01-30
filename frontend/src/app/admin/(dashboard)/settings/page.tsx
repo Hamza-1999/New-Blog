@@ -329,7 +329,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Ad placements & checklist in 2 cols */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="border border-border rounded-lg p-3.5">
                   <div className="flex items-center gap-1.5 mb-2.5">
                     <LayoutGrid size={12} className="text-primary" />

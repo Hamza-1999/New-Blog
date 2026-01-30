@@ -13,9 +13,11 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  Menu,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -31,6 +33,24 @@ export function AdminSidebar() {
   const router = useRouter();
   const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   const handleLogout = () => {
     logout();
@@ -42,24 +62,27 @@ export function AdminSidebar() {
     return pathname.startsWith(href);
   };
 
-  return (
-    <aside
-      className={cn(
-        "h-screen bg-card border-r border-border flex flex-col transition-all duration-300 sticky top-0",
-        collapsed ? "w-[72px]" : "w-64"
-      )}
-    >
+  const sidebarContent = (
+    <>
       <div className="p-4 border-b border-border flex items-center justify-between">
         {!collapsed && (
           <Link href="/admin" className="font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>
             Flavor<span className="text-primary">J</span>
           </Link>
         )}
+        {/* Desktop collapse toggle */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-1.5 hover:bg-accent rounded-md transition-colors ml-auto"
+          className="p-1.5 hover:bg-accent rounded-md transition-colors ml-auto hidden md:flex"
         >
           {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+        </button>
+        {/* Mobile close button */}
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="p-1.5 hover:bg-accent rounded-md transition-colors ml-auto md:hidden"
+        >
+          <X size={18} />
         </button>
       </div>
 
@@ -79,14 +102,14 @@ export function AdminSidebar() {
               title={collapsed ? item.label : undefined}
             >
               <item.icon size={18} />
-              {!collapsed && <span>{item.label}</span>}
+              {(!collapsed || mobileOpen) && <span>{item.label}</span>}
             </Link>
           );
         })}
       </nav>
 
       <div className="p-3 border-t border-border">
-        {!collapsed && user && (
+        {(!collapsed || mobileOpen) && user && (
           <div className="px-3 py-2 mb-2">
             <p className="text-sm font-medium truncate">{user.name}</p>
             <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
@@ -98,9 +121,54 @@ export function AdminSidebar() {
           title={collapsed ? "Logout" : undefined}
         >
           <LogOut size={18} />
-          {!collapsed && <span>Logout</span>}
+          {(!collapsed || mobileOpen) && <span>Logout</span>}
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile top bar */}
+      <div className="fixed top-0 left-0 right-0 z-40 md:hidden bg-card border-b border-border px-4 py-3 flex items-center gap-3">
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="p-1.5 hover:bg-accent rounded-md transition-colors"
+        >
+          <Menu size={20} />
+        </button>
+        <Link href="/admin" className="font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>
+          Flavor<span className="text-primary">J</span>
+        </Link>
+      </div>
+
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Mobile slide-out sidebar */}
+      <aside
+        className={cn(
+          "fixed top-0 left-0 z-50 h-screen w-72 bg-card border-r border-border flex flex-col transition-transform duration-300 md:hidden",
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        {sidebarContent}
+      </aside>
+
+      {/* Desktop sidebar */}
+      <aside
+        className={cn(
+          "h-screen bg-card border-r border-border flex-col transition-all duration-300 sticky top-0 hidden md:flex",
+          collapsed ? "w-[72px]" : "w-64"
+        )}
+      >
+        {sidebarContent}
+      </aside>
+    </>
   );
 }
