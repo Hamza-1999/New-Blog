@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useAdminBlogs, useDeleteBlog } from "@/hooks/use-blogs";
 import { Button } from "@/components/ui/button";
@@ -24,12 +24,50 @@ export default function BlogsPage() {
   const [status, setStatus] = useState<string>("");
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+  const selectAllRef = useRef<HTMLInputElement>(null);
 
   const { data, isLoading } = useAdminBlogs({ page, limit: 10, status, search });
   const deleteMutation = useDeleteBlog();
 
   const blogs = data?.blogs || [];
   const pagination = data?.pagination;
+
+  useEffect(() => {
+    if (!blogs.length) {
+      if (selectedIds.size > 0) {
+        setSelectedIds(new Set());
+      }
+      return;
+    }
+
+    setSelectedIds((prev) => {
+      const next = new Set<string>();
+      blogs.forEach((blog) => {
+        if (prev.has(blog.id)) {
+          next.add(blog.id);
+        }
+      });
+      return next;
+    });
+  }, [blogs, selectedIds.size]);
+
+  const selectedCount = selectedIds.size;
+  const allSelected = useMemo(
+    () => blogs.length > 0 && blogs.every((blog) => selectedIds.has(blog.id)),
+    [blogs, selectedIds]
+  );
+  const someSelected = useMemo(
+    () => blogs.some((blog) => selectedIds.has(blog.id)) && !allSelected,
+    [blogs, selectedIds, allSelected]
+  );
+
+  useEffect(() => {
+    if (selectAllRef.current) {
+      selectAllRef.current.indeterminate = someSelected;
+    }
+  }, [someSelected]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,9 +79,54 @@ export default function BlogsPage() {
     if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
     try {
       await deleteMutation.mutateAsync(id);
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
       toast.success("Blog deleted");
     } catch {
       toast.error("Failed to delete blog");
+    }
+  };
+
+  const toggleSelected = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    setSelectedIds((prev) => {
+      if (blogs.length === 0) return prev;
+      const next = new Set<string>();
+      const shouldSelectAll = !blogs.every((blog) => prev.has(blog.id));
+      if (shouldSelectAll) {
+        blogs.forEach((blog) => next.add(blog.id));
+      }
+      return next;
+    });
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    const count = selectedIds.size;
+    if (!confirm(`Delete ${count} selected blog${count > 1 ? "s" : ""}?`)) return;
+    setIsBulkDeleting(true);
+    try {
+      await Promise.all(Array.from(selectedIds).map((id) => deleteMutation.mutateAsync(id)));
+      setSelectedIds(new Set());
+      toast.success(`${count} blog${count > 1 ? "s" : ""} deleted`);
+    } catch {
+      toast.error("Failed to delete selected blogs");
+    } finally {
+      setIsBulkDeleting(false);
     }
   };
 
@@ -110,9 +193,40 @@ export default function BlogsPage() {
           </div>
         ) : (
           <div className="divide-y divide-border">
+            <div className="px-4 py-3 flex flex-wrap items-center gap-3 bg-card">
+              <label className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+                <input
+                  ref={selectAllRef}
+                  type="checkbox"
+                  aria-label="Select all blogs"
+                  checked={allSelected}
+                  onChange={toggleSelectAll}
+                  className="h-4 w-4 rounded border border-input"
+                />
+                {selectedCount > 0 ? `${selectedCount} selected` : "Select all"}
+              </label>
+              {selectedCount > 0 && (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={handleBulkDelete}
+                  disabled={isBulkDeleting}
+                  className="h-8"
+                >
+                  Delete selected
+                </Button>
+              )}
+            </div>
             {blogs.map((blog) => (
               <div key={blog.id} className="p-4 flex items-center gap-4 hover:bg-accent/20 transition-colors">
-                <div className="w-16 h-12 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
+                <input
+                  type="checkbox"
+                  aria-label={`Select blog ${blog.title}`}
+                  checked={selectedIds.has(blog.id)}
+                  onChange={() => toggleSelected(blog.id)}
+                  className="h-4 w-4 rounded border border-input"
+                />
+                <div className="w-16 h-12 rounded-lg overflow-hidden bg-secondary shrink-0">
                   <img src={blog.thumbnail} alt="" className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
