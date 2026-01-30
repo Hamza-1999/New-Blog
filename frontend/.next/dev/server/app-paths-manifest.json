@@ -1,0 +1,6 @@
+{
+  "/(public)/privacy-policy/page": "app/(public)/privacy-policy/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/(dashboard)/pages/page": "app/admin/(dashboard)/pages/page.js",
+  "/admin/(dashboard)/settings/page": "app/admin/(dashboard)/settings/page.js"
+}

@@ -1,0 +1,23 @@
+{
+  "/(public)/about/page": "/about",
+  "/(public)/blog/[slug]/page": "/blog/[slug]",
+  "/(public)/contact/page": "/contact",
+  "/(public)/page": "/",
+  "/(public)/privacy-policy/page": "/privacy-policy",
+  "/(public)/terms/page": "/terms",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/admin/(dashboard)/authors/page": "/admin/authors",
+  "/admin/(dashboard)/blogs/[id]/edit/page": "/admin/blogs/[id]/edit",
+  "/admin/(dashboard)/blogs/new/page": "/admin/blogs/new",
+  "/admin/(dashboard)/blogs/page": "/admin/blogs",
+  "/admin/(dashboard)/page": "/admin",
+  "/admin/(dashboard)/pages/[slug]/edit/page": "/admin/pages/[slug]/edit",
+  "/admin/(dashboard)/pages/page": "/admin/pages",
+  "/admin/(dashboard)/settings/page": "/admin/settings",
+  "/admin/login/page": "/admin/login",
+  "/feed.xml/route": "/feed.xml",
+  "/opengraph-image/route": "/opengraph-image",
+  "/robots.txt/route": "/robots.txt",
+  "/sitemap.xml/route": "/sitemap.xml"
+}
